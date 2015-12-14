@@ -1,0 +1,40 @@
+- hosts: 127.0.0.1
+  connection: local
+  tasks:
+
+      - name: install build esentials
+        apt: name=build-essential
+
+      - name: install git
+        apt: name=git
+
+      - name: get the package script
+        shell: >
+          curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
+          creates=/etc/apt/sources.list.d/nodesource.list
+
+
+#      - name: Install node and set version
+#        shell: >
+#          /bin/bash -c "source ~/.nvm/nvm.sh && nvm install 5.0 && nvm alias default 5.0"
+#          creates=/home/vagrant/.nvm/alias
+
+      - name: install nodejs
+        apt: name=nodejs
+
+      - name: install bower
+        shell: >
+          npm install --no-bin-links --no-optional -g bower
+          creates=/usr/lib/node_modules/bower
+
+
+      - name: install gulp
+        shell: >
+          npm install --no-bin-links --no-optional -g gulp
+          creates=/usr/lib/node_modules/gulp  
+
+      - name: install build and toolchain dependencies
+        command: npm install --no-optional --no-bin-links chdir=/vagrant/src
+
+      - name: install application dependencies
+        command:  chdir=/vagrant/src
