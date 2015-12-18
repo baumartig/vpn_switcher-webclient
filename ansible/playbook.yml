@@ -24,17 +24,17 @@
 
       - name: install bower
         shell: >
-          npm install --no-bin-links --no-optional -g bower
+          npm install -g bower
           creates=/usr/lib/node_modules/bower
 
 
       - name: install gulp
         shell: >
-          npm install --no-bin-links --no-optional -g gulp
-          creates=/usr/lib/node_modules/gulp  
+          npm install -g gulp
+          creates=/usr/lib/node_modules/gulp
 
       - name: install build and toolchain dependencies
-        command: npm install --no-optional --no-bin-links chdir=/vagrant/src
+        command: npm install --no-optional chdir=/vagrant/src
 
       - name: install application dependencies
-        command:  chdir=/vagrant/src
+        command: bower install chdir=/vagrant/src
