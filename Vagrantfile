@@ -15,7 +15,11 @@ Vagrant.configure(2) do |config|
   # See https://github.com/mitchellh/vagrant/issues/5005
   config.ssh.insert_key = false
    
-  config.vm.provision :shell, path: "provisioning.sh"
+  #config.vm.provision :shell, path: "provisioning.sh"
+  config.vm.provision "ansible" do |ansible|
+    ansible.verbose = "v"
+    ansible.playbook = "ansible/playbook.yml"
+  end
 
   config.vm.provider "virtualbox" do |v|
       v.memory = 1512

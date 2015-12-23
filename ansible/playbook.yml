@@ -1,5 +1,5 @@
-- hosts: 127.0.0.1
-  connection: local
+- hosts: all
+  sudo: true
   tasks:
 
       - name: install build esentials
@@ -35,6 +35,10 @@
 
       - name: install build and toolchain dependencies
         command: npm install --no-optional chdir=/vagrant/src
-
+        sudo: yes
+        sudo_user: vagrant
+        
       - name: install application dependencies
         command: bower install chdir=/vagrant/src
+        sudo: yes
+        sudo_user: vagrant  
