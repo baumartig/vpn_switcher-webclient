@@ -7,6 +7,7 @@ Vagrant.configure(2) do |config|
 
   config.vm.box = "ubuntu/trusty32"
 
+  config.vm.network "forwarded_port", guest: 80, host: 8080 # http server port
   config.vm.network "forwarded_port", guest: 5000, host: 5000 # gulp server port
   config.vm.network "forwarded_port", guest: 3001, host: 3001 # gulp server port
 

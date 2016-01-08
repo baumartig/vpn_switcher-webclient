@@ -5,14 +5,25 @@
       - name: install build esentials
         apt: name=build-essential
 
+      - name: install nginx
+        apt:  name=nginx
+
       - name: install git
         apt: name=git
+
+      - name: copy nginx configuration
+        copy: src=../configs/nginx.conf dest=/etc/nginx/sites-available/default
+
+      - name: move nginx configuration to sites-enabled
+        file: src=/etc/nginx/sites-available/default path=/etc/nginx/sites-enabled/default state=link
+
+      - name: reload nginx configuration
+        service: name=nginx state=reloaded
 
       - name: get the package script
         shell: >
           curl -sL https://deb.nodesource.com/setup_5.x | sudo -E bash -
           creates=/etc/apt/sources.list.d/nodesource.list
-
 
 #      - name: Install node and set version
 #        shell: >
@@ -27,7 +38,6 @@
           npm install -g bower
           creates=/usr/lib/node_modules/bower
 
-
       - name: install gulp
         shell: >
           npm install -g gulp
@@ -37,8 +47,8 @@
         command: npm install --no-optional chdir=/vagrant/src
         sudo: yes
         sudo_user: vagrant
-        
+
       - name: install application dependencies
         command: bower install chdir=/vagrant/src
         sudo: yes
-        sudo_user: vagrant  
+        sudo_user: vagrant
