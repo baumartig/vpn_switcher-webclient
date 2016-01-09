@@ -1,0 +1,77 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="vpn-list">
+    <style include="shared-styles"></style>
+    <style>
+      .header {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        margin: 1em 1em;
+      }
+      .list {
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        margin: 1em 1em;
+      }
+      .container {
+        @apply(--layout-vertical);
+      }
+      .element {
+        width: 100%;
+      }
+    </style>
+    
+    <template>
+        <iron-ajax  id="fetch"
+                    auto
+                    url="{{vpnUrl}}" 
+                    handle-as="json"
+                    on-response="handleVpns">
+        </iron-ajax>
+        <div class="container">
+          <div class="header">
+            <h2>[[headline]]</h2>
+            <div class="flex"></div>
+            <paper-fab icon="refresh" on-tap="refresh" mini ></paper-fab>
+          </div>
+          <div class="list">
+            <template is="dom-repeat" items="[[vpns]]">
+              <vpn-element class="element" current-vpn="[[item]]" on-toggle-favorite="refresh"></vpn-element>
+            </template>
+          </div>
+        </div>
+    </template>
+
+  <script>
+    Polymer({
+      is: 'vpn-list',
+
+      properties: {
+        headline: {
+          type: String,
+          value: 'Default List Headline'
+        },
+
+        vpnUrl: {
+          type: String,
+          value: ''
+        },
+
+        vpns: {
+          type: Object,
+          value: [],
+          notify: true
+        }
+      },
+
+      refresh: function() {
+        this.$.fetch.generateRequest();
+      },
+
+      handleVpns: function(e) {
+        this.set('vpns', e.detail.response);
+      }
+    });
+  </script>
+
+</dom-module>

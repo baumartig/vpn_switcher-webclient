@@ -1,0 +1,79 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="vpn-element">
+    <style include="shared-styles"></style>
+    <style>
+      .element {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        padding: 0.5em 0.5em;
+        margin: 0.5em 0em;
+      }
+    </style>
+    
+    <template>
+        <iron-ajax  id="setCurrent"
+                    url="/api/current"
+                    method="PUT"
+                    content-type="application/json"
+                    on-response="handleSetCurrent"></iron-ajax>
+        <iron-ajax  id="toggleFavorite"
+                    on-response="handleToggleFavorite"></iron-ajax>
+        <template is="dom-if" if="[[currentVpn.name]]">
+          <paper-material class="element" elevation="1" on-tap="setCurrent">
+            <div>[[currentVpn.name]]</div>
+            <div class="flex"></div>
+            <div on-tap="toggleFavorite">
+              <template is="dom-if" if="[[currentVpn.favorite]]">
+                <iron-icon icon="favorite"></iron-icon>
+              </template>
+              <template is="dom-if" if="[[!currentVpn.favorite]]">
+                <iron-icon icon="favorite-border"></iron-icon>
+              </template>
+            </div>
+          </paper-material>
+        </template>
+    </template>
+
+  <script>
+    (function() {
+      'use strict';
+      
+      Polymer({
+        is: 'vpn-element',
+
+        properties: {
+          currentVpn: {
+            type: Object,
+            value: {
+              name: '',
+              favorite: false
+            },
+            notify: true
+          }
+        },
+
+        setCurrent: function() {
+          this.$.setCurrent.body = JSON.stringify(this.currentVpn);
+          this.$.setCurrent.generateRequest();
+        },
+
+        handleSetCurrent: function() {
+          this.fire('set-current');
+        },
+
+        toggleFavorite: function() {
+          this.$.toggleFavorite.url = '/api/vpn/toggle-favorite/' +
+                                        this.currentVpn.name;
+          this.$.toggleFavorite.generateRequest();
+        },
+
+        handleToggleFavorite: function(e) {
+          this.set('currentVpn', e.detail.response);
+          this.fire('toggle-favorite');
+        }
+      });
+    })();
+  </script>
+
+</dom-module>

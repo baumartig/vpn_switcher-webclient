@@ -1,0 +1,92 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="vpn-page">
+    <style include="shared-styles"></style>
+    <style>
+      .header {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        margin: 1em 1em;
+      }
+      .element {
+        @apply(--layout-horizontal);
+        @apply(--layout-center);
+        padding: 0.5em 0.5em;
+        margin: 0.5em 0em;
+        width: 100%;
+      }
+      .container {        
+        @apply(--layout-vertical);
+        @apply(--layout-center);
+        margin: 1em 1em;
+      }
+    </style>
+    
+    <template>  
+        <iron-ajax  auto id="currentvpn" 
+                    url="/api/current"
+                    on-response="handleCurrentVpn">
+        </iron-ajax>
+        <paper-material elevation="1">
+          <div class="header">
+            <h2 class="">Aktuelles VPN</h2>
+            <div class="flex"></div>
+            <paper-fab icon="refresh" on-tap="refresh" mini ></paper-fab>
+          </div>
+
+          <!-- aktuelles vpn element-->
+          <template is="dom-if" if="[[currentVpn.name]]">
+          <div class="container">
+            <paper-material class="element" elevation="1">
+              <div>[[currentVpn.name]]</div>
+              <div class="flex"></div>
+              <div>
+                <template is="dom-if" if="[[currentVpn.favorite]]">
+                  <iron-icon icon="favorite"></iron-icon>
+                </template>
+                <template is="dom-if" if="[[!currentVpn.favorite]]">
+                  <iron-icon icon="favorite-border"></iron-icon>
+                </template>
+              </div>
+            </paper-material>
+          </div>
+          </template>
+
+        </paper-material>
+        
+        <paper-material elevation="1">
+          <content></content>
+        </paper-material>
+    </template>
+
+  <script>
+    (function() {
+      'use strict';
+      
+      Polymer({
+        is: 'vpn-page',
+
+        properties: {
+          currentVpn: {
+            type: Object,
+            value: {
+              flag: '',
+              name: '',
+              favorite: false
+            },
+            notify: true
+          }
+        },
+
+        refresh: function() {
+          this.$.currentvpn.generateRequest();
+        },
+
+        handleCurrentVpn: function(e) {
+          this.set('currentVpn', e.detail.response);
+        }
+      });
+    })();
+  </script>
+
+</dom-module>

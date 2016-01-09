@@ -1,0 +1,120 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="vpn-settings">
+    <style include="shared-styles"></style>
+    <style>
+      .list {
+        @apply(--layout-vertical);
+        margin: 1em 1em;
+      }
+      .element {
+        width: 100%;
+      }
+      .shutdown:hover {
+        background-color: var(--paper-red-100);
+      }
+      .shutdown {
+        padding: 0.5em 0.5em;
+        margin: 0.5em 0em;
+        background-color: var(--paper-red-500);
+        color: white;
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white !important;
+        };
+      }
+      .buttons paper-button {
+        margin: 0em 0.5em;
+      }
+    </style>
+    
+    <template>
+        <iron-ajax  id="fetch"
+                    auto
+                    url="/api/settings" 
+                    handle-as="application/json"
+                    on-response="handleSettings">
+        </iron-ajax>
+        <iron-ajax  id="save"
+                    method="PUT"
+                    url="/api/settings" 
+                    handle-as="application/json"
+                    content-type="application/json"
+                    on-response="handleSettings">
+        </iron-ajax>
+        <iron-ajax  id="restart"
+                    method="PUSH"
+                    url="/api/restart" 
+                    handle-as="application/json"
+                    on-response="handleSettings">
+        </iron-ajax>
+
+        <div class="list">
+          <template is="dom-repeat" items="[[vpnSettings]]">
+            <template is="dom-if" if="[[isTextType(item.type)]]">
+              <paper-input  class="element"
+                            label="[[item.label]]"
+                            value="{{item.value}}"></paper-input>
+            </template>
+            <template is="dom-if" if="[[isPasswordType(item.type)]]">
+              <paper-input  class="element"
+                            type="password"
+                            label="[[item.label]]"
+                            value="{{item.value}}"></paper-input>
+            </template>
+          </template>
+          <paper-button class="shutdown" raised on-tap="askRestart">Server neu Starten</paper-button>
+          <paper-fab icon="save" on-tap="save" mini ></paper-fab>
+        </div>
+
+        <paper-dialog id="restartDialog" modal on-iron-overlay-closed="restartDialogClosed">
+          <p>Möchtest du wirklich den VPN Switcher neu starten?</p>
+          <div class="buttons">
+            <paper-button dialog-dismiss>Abbrechen</paper-button>
+            <paper-button dialog-confirm autofocus>Neu Starten</paper-button>
+          </div>
+        </paper-dialog>
+    </template>
+
+  <script>
+    Polymer({
+      is: 'vpn-settings',
+
+      properties: {
+        vpnSettings: {
+          type: Object,
+          value: [],
+          notify: true
+        }
+      },
+
+      save: function() {
+        this.$.save.body = JSON.stringify(this.vpnSettings);
+        this.$.save.generateRequest();
+      },
+
+      askRestart: function() {
+        this.$.restartDialog.open();
+      },
+
+      handleSettings: function(e) {
+        this.set('vpnSettings', JSON.parse(e.detail.response));
+      },
+
+      restartDialogClosed: function(closingEvent) {
+        if (closingEvent.detail.confirmed) {
+          this.$.restart.generateRequest();
+        }
+      },
+
+      isTextType: function(type) {
+        return type === 'text';
+      },
+
+      isPasswordType: function(type) {
+        return type === 'password';
+      }
+    });
+  </script>
+
+</dom-module>
