@@ -50,7 +50,7 @@
         </iron-ajax>
 
         <div class="list">
-          <template is="dom-repeat" items="[[vpnSettings]]">
+          <template is="dom-repeat" items="[[vpnSettingsList]]">
             <template is="dom-if" if="[[isTextType(item.type)]]">
               <paper-input  class="element"
                             label="[[item.label]]"
@@ -85,6 +85,11 @@
           type: Object,
           value: [],
           notify: true
+        },
+
+        vpnSettingsList: {
+          type: Array,
+          computed: 'toArray(vpnSettings)'
         }
       },
 
@@ -98,7 +103,12 @@
       },
 
       handleSettings: function(e) {
-        this.set('vpnSettings', JSON.parse(e.detail.response));
+        var settingsString = e.detail.response;
+        if (settingsString !== undefined && settingsString.length > 0) {
+          this.set('vpnSettings', JSON.parse(e.detail.response));
+        } else {
+          this.set('vpnSettings', JSON.parse(e.detail.response));
+        }
       },
 
       restartDialogClosed: function(closingEvent) {
@@ -113,6 +123,15 @@
 
       isPasswordType: function(type) {
         return type === 'password';
+      },
+
+      toArray: function(object) {
+        var array = [];
+        for (var id in object) {
+          array.push(object[id]);
+        }
+
+        return array;
       }
     });
   </script>
