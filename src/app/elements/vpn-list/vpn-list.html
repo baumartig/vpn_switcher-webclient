@@ -34,8 +34,12 @@
             <div class="flex"></div>
             <paper-fab icon="refresh" on-tap="refresh" mini ></paper-fab>
           </div>
+          <div>
+            <paper-input label="Filter"
+                            value="{{filterValue}}"></paper-input>
+          </div>
           <div class="list">
-            <template is="dom-repeat" items="[[vpns]]">
+            <template is="dom-repeat" items="[[vpns]]" filter="{{computeFilter(filterValue)}}">
               <vpn-element class="element" current-vpn="[[item]]" on-toggle-favorite="refresh"></vpn-element>
             </template>
           </div>
@@ -61,6 +65,29 @@
           type: Object,
           value: [],
           notify: true
+        },
+
+        filterValue: {
+          type: String,
+          value: ''
+        }
+      },
+
+      computeFilter: function(string) {
+        if (!string) {
+          // set filter to null to disable filtering
+          return null;
+        } else {
+          // return a filter function for the current search string
+          string = string.toLowerCase();
+          return function(vpn) {
+            if (vpn.name) {
+              var name = vpn.name.toLowerCase();
+              return name.indexOf(string) != -1;
+            } else {
+              return 0;
+            }
+          };
         }
       },
 
