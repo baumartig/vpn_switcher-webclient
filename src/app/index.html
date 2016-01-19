@@ -63,6 +63,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
 
+    <ws-element id="ws" url="ws://localhost:8000" protocol="echo-protocol"
+      onopen="sendHello"
+      onmessage="setStatus"></ws-element>
+
     <paper-drawer-panel id="paperDrawerPanel">
       <!-- Drawer Scroll Header Panel -->
       <paper-scroll-header-panel drawer fixed>
@@ -105,8 +109,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           </div>
 
           <!-- Application sub title -->
-          <div class="bottom bottom-container">
-            <div class="bottom-title">The future of the web today</div>
+          <div class="bottom bottom-container">            
+            <template is="dom-if" if="[[serverStatus.online]]">
+              <iron-icon icon="done"></iron-icon>
+            </template>
+            <template is="dom-if" if="[[!serverStatus.online]]">
+              <iron-icon icon="error"></iron-icon>
+            </template>
+            <flag-icon country-code="[[serverStatus.country]]"></flag-icon>
           </div>
 
         </paper-toolbar>

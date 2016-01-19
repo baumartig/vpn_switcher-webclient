@@ -9,6 +9,10 @@
         padding: 0.5em 0.5em;
         margin: 0.5em 0em;
       }
+
+      .name {
+        padding-left: 1em;
+      }
     </style>
     
     <template>
@@ -21,7 +25,8 @@
                     on-response="handleToggleFavorite"></iron-ajax>
         <template is="dom-if" if="[[currentVpn.name]]">
           <paper-material class="element" elevation="1" on-tap="setCurrent">
-            <div>[[currentVpn.name]]</div>
+            <flag-icon country-code="[[currentVpn.country]]"></flag-icon>
+            <div class="name">[[currentVpn.name]]</div>
             <div class="flex"></div>
             <div on-tap="toggleFavorite">
               <template is="dom-if" if="[[currentVpn.favorite]]">
@@ -47,7 +52,8 @@
             type: Object,
             value: {
               name: '',
-              favorite: false
+              favorite: false,
+              country: 'de'
             },
             notify: true
           }

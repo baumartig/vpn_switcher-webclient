@@ -69,7 +69,17 @@
       },
 
       handleVpns: function(e) {
-        this.set('vpns', e.detail.response);
+        var list = e.detail.response;
+
+        list = list.sort(function(a, b){
+          if (a.name && b.name) {
+            return a.name.localeCompare(b.name)
+          } else {
+            return 0;
+          }
+        });
+
+        this.set('vpns', list);
       }
     });
   </script>

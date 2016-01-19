@@ -1,0 +1,37 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="flag-icon">
+    <style include="shared-styles"></style>
+    
+    <template>
+        <iron-icon src="/images/flags/{{getCountryCode(countryCode)}}.png"></iron-icon>
+    </template>
+
+  <script>
+    (function() {
+      'use strict';
+      
+      Polymer({
+        is: 'flag-icon',
+
+        properties: {
+          countryCode: {
+            type: String,
+            value: ''
+          }
+        },
+
+        getCountryCode: function(countryCode) {
+          var result = 'unknown';
+          if (countryCode && countryCode.length == 2) {
+            result = countryCode.toLowerCase();
+          } else {
+            console.log('Invalid country code: ' + countryCode);
+          }
+          return result;
+        }
+      });
+    })();
+  </script>
+
+</dom-module>
