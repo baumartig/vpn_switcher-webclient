@@ -13,6 +13,10 @@
       .name {
         padding-left: 1em;
       }
+
+      .buttons paper-button {
+        margin: 0em 0.5em;
+      }
     </style>
     
     <template>
@@ -24,9 +28,9 @@
         <iron-ajax  id="toggleFavorite"
                     on-response="handleToggleFavorite"></iron-ajax>
         <template is="dom-if" if="[[currentVpn.name]]">
-          <paper-material class="element" elevation="1" on-tap="setCurrent">
-            <flag-icon country-code="[[currentVpn.country]]"></flag-icon>
-            <div class="name">[[currentVpn.name]]</div>
+          <paper-material class="element" elevation="1">
+            <flag-icon country-code="[[currentVpn.country]]" on-tap="askSwitch"></flag-icon>
+            <div class="name" on-tap="askSwitch">[[currentVpn.name]]</div>
             <div class="flex"></div>
             <div on-tap="toggleFavorite">
               <template is="dom-if" if="[[currentVpn.favorite]]">
@@ -38,6 +42,14 @@
             </div>
           </paper-material>
         </template>
+
+        <paper-dialog id="switchDialog" modal on-iron-overlay-closed="switchDialogClosed">
+          <p>Möchtest du das VPN wechseln?</p>
+          <div class="buttons">
+            <paper-button dialog-dismiss>Abbrechen</paper-button>
+            <paper-button dialog-confirm autofocus>Wechseln</paper-button>
+          </div>
+        </paper-dialog>
     </template>
 
   <script>
@@ -59,13 +71,19 @@
           }
         },
 
-        setCurrent: function() {
-          this.$.setCurrent.body = JSON.stringify(this.currentVpn);
-          this.$.setCurrent.generateRequest();
+        askSwitch: function() {
+          this.$.switchDialog.open();
         },
 
         handleSetCurrent: function() {
           this.fire('set-current');
+        },
+
+        switchDialogClosed: function(closingEvent) {
+          if (closingEvent.detail.confirmed) {
+            this.$.setCurrent.body = JSON.stringify(this.currentVpn);
+            this.$.setCurrent.generateRequest();
+          }
         },
 
         toggleFavorite: function() {
