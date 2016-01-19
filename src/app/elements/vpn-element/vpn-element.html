@@ -23,6 +23,7 @@
         <iron-ajax  id="setCurrent"
                     url="/api/current"
                     method="PUT"
+                    handle-as="json"
                     content-type="application/json"
                     on-response="handleSetCurrent"></iron-ajax>
         <iron-ajax  id="toggleFavorite"
@@ -81,7 +82,7 @@
 
         switchDialogClosed: function(closingEvent) {
           if (closingEvent.detail.confirmed) {
-            this.$.setCurrent.body = JSON.stringify(this.currentVpn);
+            this.$.setCurrent.body = this.currentVpn;
             this.$.setCurrent.generateRequest();
           }
         },

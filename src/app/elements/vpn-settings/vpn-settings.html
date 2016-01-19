@@ -23,6 +23,19 @@
           color: white !important;
         };
       }
+      .importVpns:hover {
+        background-color: var(--paper-orange-100);
+      }
+      .importVpns {
+        padding: 0.5em 0.5em;
+        margin: 0.5em 0em;
+        background-color: var(--paper-orange-500);
+        color: white;
+        --paper-button-raised-keyboard-focus: {
+          background-color: var(--paper-pink-a200) !important;
+          color: white !important;
+        };
+      }
       .buttons paper-button {
         margin: 0em 0.5em;
       }
@@ -32,21 +45,26 @@
         <iron-ajax  id="fetch"
                     auto
                     url="/api/settings" 
-                    handle-as="application/json"
+                    handle-as="json"
                     on-response="handleSettings">
         </iron-ajax>
         <iron-ajax  id="save"
                     method="PUT"
                     url="/api/settings" 
-                    handle-as="application/json"
+                    handle-as="json"
                     content-type="application/json"
                     on-response="handleSettings">
         </iron-ajax>
         <iron-ajax  id="restart"
                     method="PUT"
                     url="/api/restart" 
-                    handle-as="application/json"
+                    handle-as="json"
                     on-response="handleSettings">
+        </iron-ajax>
+        <iron-ajax  id="importVpns"
+                    method="PUT"
+                    url="/api/vpn/import" 
+                    handle-as="json">
         </iron-ajax>
 
         <div class="list">
@@ -63,6 +81,7 @@
                             value="{{item.value}}"></paper-input>
             </template>
           </template>
+          <paper-button class="importVpns" raised on-tap="importVpns">VPNs importieren</paper-button>
           <paper-button class="shutdown" raised on-tap="askRestart">Server neu Starten</paper-button>
           <paper-fab icon="save" on-tap="save" mini ></paper-fab>
         </div>
@@ -98,6 +117,10 @@
         this.$.save.generateRequest();
       },
 
+      importVpns: function() {
+        this.$.importVpns.generateRequest();
+      },
+
       askRestart: function() {
         this.$.restartDialog.open();
       },
@@ -105,9 +128,9 @@
       handleSettings: function(e) {
         var settingsString = e.detail.response;
         if (settingsString !== undefined && settingsString.length > 0) {
-          this.set('vpnSettings', JSON.parse(e.detail.response));
+          this.set('vpnSettings', e.detail.response);
         } else {
-          this.set('vpnSettings', JSON.parse(e.detail.response));
+          this.set('vpnSettings', e.detail.response);
         }
       },
 
