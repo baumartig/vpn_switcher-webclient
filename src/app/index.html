@@ -63,9 +63,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   <span id="browser-sync-binding"></span>
   <template is="dom-bind" id="app">
 
-    <ws-element id="ws" url="ws://localhost:8000" protocol="echo-protocol"
-      onopen="sendHello"
-      onmessage="setStatus"></ws-element>
+    <ws-element id="ws" protocol="echo-protocol"
+      on-message="setStatus" on-error="wsError"></ws-element>
 
     <paper-drawer-panel id="paperDrawerPanel">
       <!-- Drawer Scroll Header Panel -->
@@ -110,11 +109,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <!-- Application sub title -->
           <div class="bottom bottom-container">            
-            <template is="dom-if" if="[[serverStatus.online]]">
-              <iron-icon icon="done"></iron-icon>
+            <template is="dom-if" if="[[serverStatus.hasTunnel]]">
+              <iron-icon icon="done" alt="VPN Verbindung besteht" title="VPN Verbindung besteht"></iron-icon>
             </template>
-            <template is="dom-if" if="[[!serverStatus.online]]">
-              <iron-icon icon="error"></iron-icon>
+            <template is="dom-if" if="[[!serverStatus.hasTunnel]]">
+              <iron-icon icon="error" alt="Keine VPN Verbindung" title="Keine VPN Verbindung"></iron-icon>
             </template>
             <flag-icon country-code="[[serverStatus.country]]"></flag-icon>
           </div>

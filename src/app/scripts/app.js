@@ -29,11 +29,16 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   }
 
   app.setStatus = function(message) {
-    app.serverStatus = message;
+    var status = JSON.parse(message.detail);
+    app.serverStatus = status;
   };
 
-  app.sendHello = function() {
-    this.$.ws.send('Hello');
+  app.wsError = function(error) {
+    console.log('WS Error: ' + error);
+  };
+
+  app.wsUrl = function() {
+    return 'ws://' + window.location.hostname + ':8000';
   };
 
   app.displayInstalledToast = function() {
@@ -47,6 +52,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   // have resolved and content has been stamped to the page
   app.addEventListener('dom-change', function() {
     console.log('Our app is ready to rock!');
+    // build and set the websocket url
+    this.$.ws.url = this.wsUrl();
   });
 
   // See https://github.com/Polymer/polymer/issues/1381
