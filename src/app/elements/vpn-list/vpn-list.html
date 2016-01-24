@@ -83,7 +83,7 @@
           return function(vpn) {
             if (vpn.name) {
               var name = vpn.name.toLowerCase();
-              return name.indexOf(string) != -1;
+              return name.indexOf(string) !== -1;
             } else {
               return 0;
             }
@@ -98,9 +98,9 @@
       handleVpns: function(e) {
         var list = e.detail.response;
 
-        list = list.sort(function(a, b){
+        list = list.sort(function(a, b) {
           if (a.name && b.name) {
-            return a.name.localeCompare(b.name)
+            return a.name.localeCompare(b.name);
           } else {
             return 0;
           }

@@ -23,7 +23,7 @@
 
         getCountryCode: function(countryCode) {
           var result = 'unknown';
-          if (countryCode && countryCode.length == 2) {
+          if (countryCode && countryCode.length === 2) {
             result = countryCode.toLowerCase();
           } else {
             console.log('Invalid country code: ' + countryCode);
