@@ -271,6 +271,11 @@ gulp.task('serve', ['lint', 'styles', 'elements', 'images'], function() {
   gulp.watch(['app/images/**/*'], reload);
 });
 
+// Build the output to the dist directory
+gulp.task('dist', ['default'], function() {
+  return dist('**/*');
+});
+
 // Build and serve the output from the dist build
 gulp.task('serve:dist', ['default'], function() {
   browserSync({
